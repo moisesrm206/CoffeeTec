@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect()->route('menu'));
+Route::get('/', fn () => view('menu'))->name('home');
 
 Route::get('/menu', fn () => view('menu'))->name('menu');
 
