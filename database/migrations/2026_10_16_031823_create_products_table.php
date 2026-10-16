@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id('id_product');
             $table->foreignId('id_category')->constrained('categories');
-            $table->string('name');
+            $table->string('name', 100);
             $table->text('description');
             $table->decimal('price', 8, 2);
             $table->integer('stock');
