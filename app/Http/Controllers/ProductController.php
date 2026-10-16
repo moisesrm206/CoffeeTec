@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-class ProductsController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
-        //
+        return view('menu', [
+            'products' => Product::query()
+                ->with('category')
+                ->where('stock', '>', 0)
+                ->orderBy('name')
+                ->get(),
+        ]);
     }
 
     /**

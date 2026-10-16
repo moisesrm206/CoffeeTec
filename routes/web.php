@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('menu'))->name('home');
+Route::get('/', [ProductController::class, 'index'])->name('home');
 
-Route::get('/menu', fn () => view('menu'))->name('menu');
+Route::get('/menu', [ProductController::class, 'index'])->name('menu');
 
 Route::get('/cocina', fn () => view('cocina', [
     'order' => session('order'),

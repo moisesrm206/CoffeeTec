@@ -3,15 +3,6 @@
 @section('title', 'Menú de hoy | CoffeeTec')
 
 @section('content')
-    @php
-        $products = [
-            ['id' => 1, 'name' => 'Sándwich de pollo', 'description' => 'Pan artesanal, pollo y vegetales.', 'price' => 35, 'icon' => '🥪'],
-            ['id' => 2, 'name' => 'Hamburguesa escolar', 'description' => 'Carne, queso, lechuga y jitomate.', 'price' => 45, 'icon' => '🍔'],
-            ['id' => 3, 'name' => 'Jugo natural', 'description' => 'Jugo del día, sin conservadores.', 'price' => 18, 'icon' => '🧃'],
-            ['id' => 4, 'name' => 'Café con leche', 'description' => 'Café caliente preparado al momento.', 'price' => 20, 'icon' => '☕'],
-        ];
-    @endphp
-
     <div class="mb-4">
         <span class="badge text-bg-warning mb-2">MENÚ DE HOY</span>
         <h1 class="display-6 fw-bold mb-1">Pide fácil, come rico</h1>
@@ -21,26 +12,30 @@
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="row g-3">
-                @foreach ($products as $product)
+                @forelse (($products ?? collect()) as $product)
                     <div class="col-md-6">
                         <div class="card product-card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <span class="display-6">{{ $product['icon'] }}</span>
-                                    <span class="badge rounded-pill text-bg-light">${{ number_format($product['price'], 2) }}</span>
+                                    <span class="display-6">☕</span>
+                                    <span class="badge rounded-pill text-bg-light">${{ number_format((float) $product->price, 2) }}</span>
                                 </div>
-                                <h2 class="h5 mt-3 mb-1">{{ $product['name'] }}</h2>
-                                <p class="text-muted small mb-3">{{ $product['description'] }}</p>
+                                <h2 class="h5 mt-3 mb-1">{{ $product->name }}</h2>
+                                <p class="text-muted small mb-3">{{ $product->description ?? 'Producto de la cafetería escolar.' }}</p>
                                 <button class="btn btn-sm btn-coffee w-100 add-product"
-                                    data-id="{{ $product['id'] }}"
-                                    data-name="{{ $product['name'] }}"
-                                    data-price="{{ $product['price'] }}">
+                                    data-id="{{ $product->id_product }}"
+                                    data-name="{{ $product->name }}"
+                                    data-price="{{ $product->price }}">
                                     Agregar al pedido
                                 </button>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-12">
+                        <div class="alert alert-info">No hay productos disponibles en este momento.</div>
+                    </div>
+                @endforelse
             </div>
         </div>
 
