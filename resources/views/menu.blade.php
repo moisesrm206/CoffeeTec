@@ -11,9 +11,28 @@
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="row g-3">
+            <div class="row g-3 mb-4" aria-label="Filtros del menú">
+                <div class="col-md-5">
+                    <label class="form-label" for="category-filter">Categoría</label>
+                    <select class="form-select" id="category-filter">
+                        <option value="">Todas las categorías</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id_category }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label" for="product-search">Buscar producto o alimento</label>
+                    <input class="form-control" id="product-search" type="search"
+                        placeholder="Ej. café, sándwich..." autocomplete="off">
+                </div>
+            </div>
+
+            <div class="row g-3" id="product-list">
                 @forelse (($products ?? collect()) as $product)
-                    <div class="col-md-6">
+                    <div class="col-md-6 product-item"
+                        data-category="{{ $product->id_category }}"
+                        data-product-name="{{ $product->name }}">
                         <div class="card product-card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
@@ -21,6 +40,7 @@
                                     <span class="badge rounded-pill text-bg-light">${{ number_format((float) $product->price, 2) }}</span>
                                 </div>
                                 <h2 class="h5 mt-3 mb-1">{{ $product->name }}</h2>
+                                <span class="badge text-bg-secondary">{{ $product->category->name }}</span>
                                 <p class="text-muted small mb-3">{{ $product->description ?? 'Producto de la cafetería escolar.' }}</p>
                                 <button class="btn btn-sm btn-coffee w-100 add-product"
                                     data-id="{{ $product->id_product }}"
@@ -36,6 +56,9 @@
                         <div class="alert alert-info">No hay productos disponibles en este momento.</div>
                     </div>
                 @endforelse
+            </div>
+            <div class="alert alert-info d-none" id="no-filter-results">
+                No hay productos que coincidan con los filtros seleccionados.
             </div>
         </div>
 
@@ -70,50 +93,12 @@
     </div>
 @endsection
 
-@push('scripts')
-<script>
-    const cart = [];
-    const itemsContainer = document.getElementById('cart-items');
-    const totalElement = document.getElementById('cart-total');
-    const itemsInput = document.getElementById('items-input');
-    const submitButton = document.getElementById('submit-order');
-
-    function renderCart() {
-        if (!cart.length) {
-            itemsContainer.innerHTML = '<p class="text-muted small mb-0">Aún no has agregado productos.</p>';
-            totalElement.textContent = '$0.00';
-            submitButton.disabled = true;
-            itemsInput.value = '';
-            return;
-        }
-
-        itemsContainer.innerHTML = cart.map((item, index) => `
-            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                <div class="small"><strong>${item.name}</strong><br><span class="text-muted">${item.quantity} × $${item.price.toFixed(2)}</span></div>
-                <button class="btn btn-sm btn-outline-danger remove-product" data-index="${index}" type="button">×</button>
-            </div>
-        `).join('');
-
-        const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        totalElement.textContent = `$${total.toFixed(2)}`;
-        itemsInput.value = JSON.stringify(cart);
-        submitButton.disabled = false;
-    }
-
-    document.querySelectorAll('.add-product').forEach((button) => {
-        button.addEventListener('click', () => {
-            const product = { id: Number(button.dataset.id), name: button.dataset.name, price: Number(button.dataset.price), quantity: 1 };
-            const existing = cart.find((item) => item.id === product.id);
-            existing ? existing.quantity++ : cart.push(product);
-            renderCart();
-        });
-    });
-
-    itemsContainer.addEventListener('click', (event) => {
-        if (event.target.matches('.remove-product')) {
-            cart.splice(Number(event.target.dataset.index), 1);
-            renderCart();
-        }
-    });
-</script>
-@endpush
+@pushOnce('scripts')
+    @if (file_exists(public_path('build/manifest.json')))
+        @vite('resources/js/menu.js')
+    @else
+        <script>
+            {!! file_get_contents(resource_path('js/menu.js')) !!}
+        </script>
+    @endif
+@endpushOnce

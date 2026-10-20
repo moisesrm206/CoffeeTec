@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -14,6 +14,9 @@ class ProductController extends Controller
     public function index(): View
     {
         return view('menu', [
+            'categories' => Category::query()
+                ->orderBy('name')
+                ->get(),
             'products' => Product::query()
                 ->with('category')
                 ->where('stock', '>', 0)
