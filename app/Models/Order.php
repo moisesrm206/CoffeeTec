@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
@@ -14,7 +13,7 @@ class Order extends Model
     protected $primaryKey = 'id_order';
 
     protected $fillable = [
-        'id',
+        'customer',
         'status',
         'total',
     ];
@@ -24,11 +23,6 @@ class Order extends Model
         return [
             'total' => 'decimal:2',
         ];
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'id', 'id');
     }
 
     public function orderProducts(): HasMany

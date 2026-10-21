@@ -8,20 +8,23 @@
         @vite(['resources/css/app.css', 'resources/css/template.css'])
     @else
         <style>
-            :root {
-                --coffee-dark: #4b2e20;
-                --coffee-light: #d6a77a;
-                --coffee-cream: #fff8ef;
-            }
+    :root {
+        --coffee-dark: #4b2e20;
+        --coffee-light: #d6a77a;
+        --coffee-cream: #fff8ef;
+    }
 
-            body { background: var(--coffee-cream); }
-            .navbar, .btn-coffee { background-color: var(--coffee-dark); }
-            .btn-coffee { color: #fff; }
-            .btn-coffee:hover { background-color: #352016; color: #fff; }
-            .brand-mark { color: var(--coffee-light); }
-            .product-card { transition: transform .15s ease, box-shadow .15s ease; }
-            .product-card:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(75, 46, 32, .12); }
-        </style>
+    body { background: var(--coffee-cream); }
+    .navbar, .btn-coffee { background-color: var(--coffee-dark); }
+    .btn-coffee { color: #fff; }
+    .btn-coffee:hover { background-color: #352016; color: #fff; }
+    .brand-mark { color: var(--coffee-light); }
+    .product-card { transition: transform .15s ease, box-shadow .15s ease; }
+    .product-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(75, 46, 32, .12);
+    }
+</style>
     @endif
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>

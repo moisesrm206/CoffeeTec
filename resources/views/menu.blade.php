@@ -79,10 +79,7 @@
                             <label class="form-label small" for="customer">Nombre</label>
                             <input class="form-control" id="customer" name="customer" placeholder="Ej. María López" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label small" for="group">Grupo o salón</label>
-                            <input class="form-control" id="group" name="group" placeholder="Ej. 3°A" required>
-                        </div>
+                        
                         <button class="btn btn-coffee w-100" type="submit" id="submit-order" disabled>
                             Confirmar pedido
                         </button>

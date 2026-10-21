@@ -2,6 +2,30 @@
 
 @section('title', 'Panel de cocina | CoffeeTec')
 
+@php
+    $columns = [
+        'pending' => [
+            'title' => 'Nuevos pedidos',
+            'subtitle' => 'Pendientes de preparar',
+            'badge' => 'warning',
+            'action' => 'making',
+            'actionLabel' => 'Comenzar preparación',
+        ],
+        'making' => [
+            'title' => 'En preparación',
+            'subtitle' => 'Pedidos en proceso',
+            'badge' => 'primary',
+            'action' => 'completed',
+            'actionLabel' => 'Marcar como listo',
+        ],
+        'completed' => [
+            'title' => 'Listos',
+            'subtitle' => 'Pedidos terminados',
+            'badge' => 'success',
+        ],
+    ];
+@endphp
+
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -12,46 +36,76 @@
         <a href="{{ route('menu') }}" class="btn btn-outline-secondary">Ver menú</a>
     </div>
 
-    @if (!$order)
-        <div class="card border-0 shadow-sm text-center">
-            <div class="card-body py-5">
-                <div class="display-4 mb-3">🍽️</div>
-                <h2 class="h5">No hay pedidos todavía</h2>
-                <p class="text-muted mb-0">Crea uno desde el menú para verlo aquí.</p>
-            </div>
-        </div>
-    @else
-        <div class="card border-0 shadow-sm" style="max-width: 600px;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
-                    <div>
-                        <span class="text-muted small">ORDEN #{{ str_pad($order['id'], 3, '0', STR_PAD_LEFT) }}</span>
-                        <h2 class="h4 mb-0">{{ $order['customer'] }}</h2>
-                        <span class="text-muted small">Grupo {{ $order['group'] }}</span>
+    <div class="row g-4">
+        @foreach ($columns as $status => $column)
+            <div class="col-12 col-lg-4">
+                <section class="h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h2 class="h4 fw-bold mb-1">{{ $column['title'] }}</h2>
+                            <p class="text-muted small mb-0">{{ $column['subtitle'] }}</p>
+                        </div>
+                        <span class="badge text-bg-{{ $column['badge'] }}">
+                            {{ $orders->where('status', $status)->count() }}
+                        </span>
                     </div>
-                    <span class="badge text-bg-{{ $order['status'] === 'Pendiente' ? 'warning' : ($order['status'] === 'Listo' ? 'success' : 'primary') }}">
-                        {{ $order['status'] }}
-                    </span>
-                </div>
-                @foreach ($order['items'] as $item)
-                    <div class="d-flex justify-content-between py-2">
-                        <span>{{ $item['quantity'] }} × {{ $item['name'] }}</span>
-                        <span>${{ number_format($item['price'] * $item['quantity'], 2) }}</span>
+
+                    <div class="d-flex flex-column gap-3">
+                        @forelse ($orders->where('status', $status) as $order)
+                            <article class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+                                        <div>
+                                            <span class="text-muted small">
+                                                ORDEN #{{ str_pad($order->id_order, 3, '0', STR_PAD_LEFT) }}
+                                            </span>
+                                            <h3 class="h5 mb-0">{{ $order->customer ?? 'Cliente sin nombre' }}</h3>
+                                        </div>
+                                        <span class="badge text-bg-{{ $column['badge'] }}">
+                                            {{ $status === 'pending' ? 'Pendiente' : ($status === 'making' ? 'En preparación' : 'Listo') }}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex flex-column gap-2">
+                                        @foreach ($order->orderProducts as $orderProduct)
+                                            <div class="d-flex justify-content-between">
+                                                <span>
+                                                    {{ $orderProduct->quantity }} ×
+                                                    {{ $orderProduct->product->name }}
+                                                </span>
+                                                <span>
+                                                    ${{ number_format($orderProduct->price * $orderProduct->quantity, 2) }}
+                                                </span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    <div class="d-flex justify-content-between border-top pt-3 mt-3 fw-bold">
+                                        <span>Total</span>
+                                        <span>${{ number_format($order->total, 2) }}</span>
+                                    </div>
+
+                                    @isset($column['action'])
+                                        <form method="POST" action="{{ route('orders.status', $order) }}" class="mt-4">
+                                            @csrf
+                                            <input type="hidden" name="status" value="{{ $column['action'] }}">
+                                            <button class="btn btn-coffee w-100">
+                                                {{ $column['actionLabel'] }}
+                                            </button>
+                                        </form>
+                                    @endisset
+                                </div>
+                            </article>
+                        @empty
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center text-muted py-4">
+                                    No hay pedidos en esta sección.
+                                </div>
+                            </div>
+                        @endforelse
                     </div>
-                @endforeach
-                <div class="d-flex justify-content-between border-top pt-3 mt-2 fw-bold">
-                    <span>Total</span><span>${{ number_format($order['total'], 2) }}</span>
-                </div>
-                @if ($order['status'] !== 'Listo')
-                    <form method="POST" action="{{ route('orders.status') }}" class="mt-4">
-                        @csrf
-                        <input type="hidden" name="status" value="{{ $order['status'] === 'Pendiente' ? 'En preparación' : 'Listo' }}">
-                        <button class="btn btn-coffee w-100">
-                            Marcar como {{ $order['status'] === 'Pendiente' ? 'en preparación' : 'listo' }}
-                        </button>
-                    </form>
-                @endif
+                </section>
             </div>
-        </div>
-    @endif
+        @endforeach
+    </div>
 @endsection
