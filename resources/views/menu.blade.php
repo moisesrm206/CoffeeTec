@@ -34,9 +34,18 @@
                         data-category="{{ $product->id_category }}"
                         data-product-name="{{ $product->name }}">
                         <div class="card product-card h-full rounded-lg border border-coffee-light/30 bg-white shadow-sm overflow-hidden flex flex-col">
+                            <div class="relative h-48 overflow-hidden">
+                                @if ($product->image)
+                                    <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full bg-coffee-dark/10 flex items-center justify-center border-b border-coffee-light/20">
+                                        <span class="text-coffee-dark/30 text-xl">☕</span>
+                                    </div>
+                                @endif
+                            </div>
                             <div class="p-4 flex-1 flex flex-col">
                                 <div class="flex justify-between items-start">
-                                    <span class="text-3xl line-height-1">☕</span>
                                     <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-coffee-light text-coffee-dark text-xs font-medium">${{ number_format((float) $product->price, 2) }}</span>
                                 </div>
                                 <h2 class="mt-3 mb-1 text-lg font-semibold text-coffee-dark group-hover:text-coffee-gold transition-colors">{{ $product->name }}</h2>

@@ -84,7 +84,7 @@ class OrderController extends Controller
             fn (array $item): float => $item['price'] * $item['quantity']
         );
 
-        DB::transaction(function () use ($orderItems, $total, $customer): void {
+        $order = DB::transaction(function () use ($orderItems, $total, $customer) {
             $order = Order::create([
                 'customer' => $customer,
                 'total' => $total,
@@ -98,6 +98,8 @@ class OrderController extends Controller
                     'price' => $item['price'],
                 ])->all()
             );
+
+            return $order;
         });
 
         return redirect()->route('orders.track', $order)->with('success', 'Pedido creado correctamente.');

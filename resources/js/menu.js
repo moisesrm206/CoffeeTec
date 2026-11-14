@@ -10,7 +10,7 @@ const noFilterResults = document.getElementById('no-filter-results');
 
 function renderCart() {
     if (!cart.length) {
-        itemsContainer.innerHTML = '<p class="text-muted small mb-0">Aún no has agregado productos.</p>';
+        itemsContainer.innerHTML = '<p class="text-coffee-dark/50 text-sm">Aún no has agregado productos.</p>';
         totalElement.textContent = '$0.00';
         submitButton.disabled = true;
         itemsInput.value = '';
@@ -18,9 +18,9 @@ function renderCart() {
     }
 
     itemsContainer.innerHTML = cart.map((item, index) => `
-            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                <div class="small"><strong>${item.name}</strong><br><span class="text-muted">${item.quantity} × $${item.price.toFixed(2)}</span></div>
-                <button class="btn btn-sm btn-outline-danger remove-product" data-index="${index}" type="button">×</button>
+            <div class="flex justify-between items-center border-b border-coffee-light/10 py-2">
+                <div class="text-sm"><strong>${item.name}</strong><br><span class="text-coffee-dark/60 text-xs">${item.quantity} × $${item.price.toFixed(2)}</span></div>
+                <button class="text-coffee-gold hover:text-coffee-dark hover:underline text-sm font-medium remove-product" data-index="${index}" type="button">×</button>
             </div>
         `).join('');
 
@@ -30,9 +30,14 @@ function renderCart() {
     submitButton.disabled = false;
 }
 
-document.querySelectorAll('.add-product').forEach((button) => {
+document.querySelectorAll('.btn-add-product').forEach((button) => {
     button.addEventListener('click', () => {
-        const product = { id: Number(button.dataset.id), name: button.dataset.name, price: Number(button.dataset.price), quantity: 1 };
+        const product = {
+            id: Number(button.dataset.id),
+            name: button.dataset.name,
+            price: Number(button.dataset.price),
+            quantity: 1,
+        };
         const existing = cart.find((item) => item.id === product.id);
         existing ? existing.quantity++ : cart.push(product);
         renderCart();
@@ -56,11 +61,11 @@ function filterProducts() {
         const matchesSearch = !searchTerm || productItem.dataset.productName.toLocaleLowerCase().includes(searchTerm);
         const isVisible = matchesCategory && matchesSearch;
 
-        productItem.classList.toggle('d-none', !isVisible);
+        productItem.classList.toggle('hidden', !isVisible);
         visibleProducts += isVisible ? 1 : 0;
     });
 
-    noFilterResults.classList.toggle('d-none', visibleProducts > 0 || productItems.length === 0);
+    noFilterResults.classList.toggle('hidden', visibleProducts > 0 || productItems.length === 0);
 }
 
 categoryFilter.addEventListener('change', filterProducts);

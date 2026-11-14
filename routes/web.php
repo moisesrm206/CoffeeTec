@@ -26,6 +26,13 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/personal', [StaffController::class, 'store'])->name('staff.store');
         Route::patch('/personal/{user}', [StaffController::class, 'update'])->name('staff.update');
         Route::delete('/personal/{user}', [StaffController::class, 'destroy'])->name('staff.destroy');
+
+        Route::get('/productos', [ProductController::class, 'adminIndex'])->name('products.index');
+        Route::get('/productos/crear', [ProductController::class, 'create'])->name('products.create');
+        Route::post('/productos', [ProductController::class, 'store'])->name('products.store');
+        Route::get('/productos/{product}/editar', [ProductController::class, 'edit'])->name('products.edit');
+        Route::patch('/productos/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/productos/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     });
 
 require __DIR__.'/auth.php';

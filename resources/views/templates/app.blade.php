@@ -44,6 +44,7 @@
 
                             @if (auth()->user()->isAdmin())
                                 <a href="{{ route('admin.staff.index') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Personal</a>
+                                <a href="{{ route('admin.products.index') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Productos</a>
                             @endif
 
                             <a href="{{ route('profile.edit') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Mi cuenta</a>
