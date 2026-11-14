@@ -1,11 +1,13 @@
 :root {
-    --coffee-dark: #4b2e20;
-    --coffee-light: #d6a77a;
-    --coffee-cream: #fff8ef;
+    --coffee-dark: #0A2947;
+    --coffee-light: #D3D4C0;
+    --coffee-cream: #F3E4C9;
+    --coffee-gold: #8B5E3C;
 }
 
 body {
-    background: var(--coffee-cream);
+    background-color: var(--coffee-cream);
+    color: var(--coffee-dark);
 }
 
 .navbar,
@@ -18,12 +20,12 @@ body {
 }
 
 .btn-coffee:hover {
-    background-color: #352016;
+    background-color: #081f36;
     color: #fff;
 }
 
 .brand-mark {
-    color: var(--coffee-light);
+    color: var(--coffee-gold);
 }
 
 .product-card {
@@ -32,5 +34,25 @@ body {
 
 .product-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 .5rem 1rem rgba(75, 46, 32, .12);
+    box-shadow: 0 .5rem 1rem rgba(10, 41, 71, .12);
+}
+
+.text-coffee-dark {
+    color: var(--coffee-dark);
+}
+
+.bg-coffee-dark {
+    background-color: var(--coffee-dark);
+}
+
+.bg-coffee-cream {
+    background-color: var(--coffee-cream);
+}
+
+.bg-coffee-light {
+    background-color: var(--coffee-light);
+}
+
+.border-coffee-gold {
+    border-color: var(--coffee-gold);
 }
