@@ -10,6 +10,7 @@ Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/menu', [ProductController::class, 'index'])->name('menu');
 
 Route::post('/pedidos', [OrderController::class, 'store'])->name('orders.store');
+Route::get('/pedidos/{order}/seguimiento', [OrderController::class, 'track'])->name('orders.track');
 
 Route::middleware(['auth', 'role:admin,cocina'])->group(function (): void {
     Route::get('/cocina', [OrderController::class, 'index'])->name('kitchen');

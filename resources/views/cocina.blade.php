@@ -7,89 +7,91 @@
         'pending' => [
             'title' => 'Nuevos pedidos',
             'subtitle' => 'Pendientes de preparar',
-            'badge' => 'warning',
+            'badge' => 'bg-amber-100 text-amber-800 border-amber-200',
+            'dot' => 'bg-amber-500',
             'action' => 'making',
             'actionLabel' => 'Comenzar preparación',
         ],
         'making' => [
             'title' => 'En preparación',
             'subtitle' => 'Pedidos en proceso',
-            'badge' => 'primary',
+            'badge' => 'bg-blue-100 text-blue-800 border-blue-200',
+            'dot' => 'bg-blue-500',
             'action' => 'completed',
             'actionLabel' => 'Marcar como listo',
         ],
         'completed' => [
             'title' => 'Listos',
             'subtitle' => 'Pedidos terminados',
-            'badge' => 'success',
+            'badge' => 'bg-green-100 text-green-800 border-green-200',
+            'dot' => 'bg-green-500',
         ],
     ];
 @endphp
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-            <span class="badge text-bg-warning mb-2">OPERACIÓN</span>
-            <h1 class="h2 fw-bold mb-1">Panel de cocina</h1>
-            <p class="text-muted mb-0">Gestiona los pedidos de la cafetería.</p>
+            <span class="inline-block px-3 py-1 rounded-full bg-coffee-gold/10 text-coffee-gold text-xs font-semibold mb-2">OPERACIÓN</span>
+            <h1 class="text-2xl font-bold text-coffee-dark mb-1">Panel de cocina</h1>
+            <p class="text-coffee-dark/60 text-sm">Gestiona los pedidos de la cafetería.</p>
         </div>
-        <a href="{{ route('menu') }}" class="btn btn-outline-secondary">Ver menú</a>
+        <a href="{{ route('menu') }}"
+            class="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-coffee-light/50 bg-white text-coffee-dark text-sm font-medium hover:bg-coffee-gold/50 hover:text-coffee-gold transition-colors">
+            Ver menú
+        </a>
     </div>
 
-    <div class="row g-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         @foreach ($columns as $status => $column)
-            <div class="col-12 col-lg-4">
-                <section class="h-100">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="lg:col-span-1">
+                <section class="h-full">
+                    <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h2 class="h4 fw-bold mb-1">{{ $column['title'] }}</h2>
-                            <p class="text-muted small mb-0">{{ $column['subtitle'] }}</p>
+                            <h2 class="text-lg font-bold text-coffee-dark mb-1">{{ $column['title'] }}</h2>
+                            <p class="text-xs text-coffee-dark/50">{{ $column['subtitle'] }}</p>
                         </div>
-                        <span class="badge text-bg-{{ $column['badge'] }}">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md {{ $column['badge'] ?? 'bg-coffee-light/20 text-coffee-dark border border-coffee-light/30' }} text-xs font-semibold">
                             {{ $orders->where('status', $status)->count() }}
                         </span>
                     </div>
 
-                    <div class="d-flex flex-column gap-3">
+                    <div class="flex flex-col gap-3">
                         @forelse ($orders->where('status', $status) as $order)
-                            <article class="card border-0 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+                            <article class="rounded-lg border border-coffee-light/30 bg-white shadow-sm overflow-hidden flex flex-col">
+                                <div class="p-4">
+                                    <div class="flex justify-between items-start border-b border-coffee-light/20 pb-3 mb-3">
                                         <div>
-                                            <span class="text-muted small">
-                                                ORDEN #{{ str_pad($order->id_order, 3, '0', STR_PAD_LEFT) }}
-                                            </span>
-                                            <h3 class="h5 mb-0">{{ $order->customer ?? 'Cliente sin nombre' }}</h3>
+                                            <span class="text-xs text-coffee-dark/40">ORDEN #{{ str_pad($order->id_order, 3, '0', STR_PAD_LEFT) }}</span>
+                                            <h3 class="text-base font-semibold text-coffee-dark mt-0.5">{{ $order->customer ?? 'Cliente sin nombre' }}</h3>
                                         </div>
-                                        <span class="badge text-bg-{{ $column['badge'] }}">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full {{ $column['badge'] ?? 'bg-coffee-light/20 text-coffee-dark' }} text-[10px] font-bold uppercase tracking-wider">
                                             {{ $status === 'pending' ? 'Pendiente' : ($status === 'making' ? 'En preparación' : 'Listo') }}
                                         </span>
                                     </div>
 
-                                    <div class="d-flex flex-column gap-2">
+                                    <div class="flex flex-col gap-2">
                                         @foreach ($order->orderProducts as $orderProduct)
-                                            <div class="d-flex justify-content-between">
-                                                <span>
-                                                    {{ $orderProduct->quantity }} ×
-                                                    {{ $orderProduct->product->name }}
+                                            <div class="flex justify-between items-center border-b border-coffee-light/10 pb-2 last:border-0">
+                                                <span class="text-sm text-coffee-dark/80">
+                                                    {{ $orderProduct->quantity }} × {{ $orderProduct->product->name }}
                                                 </span>
-                                                <span>
-                                                    ${{ number_format($orderProduct->price * $orderProduct->quantity, 2) }}
-                                                </span>
+                                                <span class="text-sm font-medium text-coffee-dark">${{ number_format($orderProduct->price * $orderProduct->quantity, 2) }}</span>
                                             </div>
                                         @endforeach
                                     </div>
 
-                                    <div class="d-flex justify-content-between border-top pt-3 mt-3 fw-bold">
-                                        <span>Total</span>
-                                        <span>${{ number_format($order->total, 2) }}</span>
+                                    <div class="border-t border-coffee-light/20 pt-3 mt-3 flex justify-between items-center font-bold text-sm">
+                                        <span class="text-coffee-dark">Total</span>
+                                        <span class="text-coffee-dark">${{ number_format($order->total, 2) }}</span>
                                     </div>
 
                                     @isset($column['action'])
-                                        <form method="POST" action="{{ route('orders.status', $order) }}" class="mt-4">
+                                        <form method="POST" action="{{ route('orders.status', $order) }}" class="p-4 border-t border-coffee-light/10">
                                             @csrf
                                             <input type="hidden" name="status" value="{{ $column['action'] }}">
-                                            <button class="btn btn-coffee w-100">
+                                            <button type="submit"
+                                                class="w-full py-2 rounded-lg bg-coffee-dark text-white font-medium text-sm hover:bg-coffee-gold transition-colors active:scale-[0.98]">
                                                 {{ $column['actionLabel'] }}
                                             </button>
                                         </form>
@@ -97,10 +99,8 @@
                                 </div>
                             </article>
                         @empty
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body text-center text-muted py-4">
-                                    No hay pedidos en esta sección.
-                                </div>
+                            <div class="rounded-lg border border-dashed border-coffee-light/40 bg-coffee-dark/5 p-6 text-center">
+                                <p class="text-xs text-coffee-dark/40">No hay pedidos en esta sección.</p>
                             </div>
                         @endforelse
                     </div>

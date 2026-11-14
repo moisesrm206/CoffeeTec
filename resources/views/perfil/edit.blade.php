@@ -3,83 +3,92 @@
 @section('title', 'Mi cuenta | CoffeeTec')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <h1 class="h4 fw-bold mb-4">Mi cuenta</h1>
+    <div class="max-w-2xl mx-auto py-8">
+        <div class="bg-white rounded-xl shadow-sm border border-coffee-light/20 p-8">
+            <h1 class="text-xl font-bold text-coffee-dark mb-6">Mi cuenta</h1>
 
             @if (session('status') === 'profile-updated')
-                <div class="alert alert-success">Datos actualizados.</div>
+                <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6 text-sm">Datos actualizados.</div>
             @elseif (session('status') === 'password-updated')
-                <div class="alert alert-success">Contraseña actualizada.</div>
+                <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6 text-sm">Contraseña actualizada.</div>
             @endif
 
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-body p-4">
-                    <h2 class="h6 fw-semibold mb-3">Datos personales</h2>
-
-                    <form method="POST" action="{{ route('profile.update') }}">
+            <div class="space-y-8">
+                <div>
+                    <h2 class="text-sm font-semibold text-coffee-dark/60 uppercase tracking-wider mb-4">Datos personales</h2>
+                    <form method="POST" action="{{ route('profile.update') }}" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @csrf
                         @method('patch')
 
-                        <div class="mb-3">
-                            <label class="form-label" for="name">Nombre</label>
-                            <input class="form-control @error('name', 'updateProfileInformation') is-invalid @enderror"
-                                id="name" type="text" name="name" value="{{ old('name', $user->name) }}" required>
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-coffee-dark mb-1">Nombre</label>
+                            <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}" required
+                                class="block w-full rounded-lg border border-coffee-light/50 bg-white py-2.5 px-3 text-coffee-dark placeholder-coffee-dark/30 focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none transition-all">
                             @error('name', 'updateProfileInformation')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label" for="email">Correo electrónico</label>
-                            <input class="form-control @error('email', 'updateProfileInformation') is-invalid @enderror"
-                                id="email" type="email" name="email" value="{{ old('email', $user->email) }}" required>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-coffee-dark mb-1">Correo electrónico</label>
+                            <input id="email" type="email" name="email" value="{{ old('email', $user->email) }}" required
+                                class="block w-full rounded-lg border border-coffee-light/50 bg-white py-2.5 px-3 text-coffee-dark placeholder-coffee-dark/30 focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none transition-all">
                             @error('email', 'updateProfileInformation')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <p class="text-muted small mb-3">Rol: {{ $user->role->label() }}</p>
+                        <div class="md:col-span-2 flex items-end gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-coffee-light/20 text-coffee-dark text-xs font-semibold border border-coffee-light/30">
+                                Rol: {{ $user->role->label() }}
+                            </span>
+                        </div>
 
-                        <button class="btn btn-coffee" type="submit">Guardar cambios</button>
+                        <div class="md:col-span-2">
+                            <button type="submit"
+                                class="w-auto py-2.5 px-6 rounded-lg bg-coffee-dark text-white font-medium text-sm hover:bg-coffee-gold transition-colors active:scale-[0.98]">
+                                Guardar cambios
+                            </button>
+                        </div>
                     </form>
                 </div>
-            </div>
 
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <h2 class="h6 fw-semibold mb-3">Cambiar contraseña</h2>
-
-                    <form method="POST" action="{{ route('password.update') }}">
+                <div class="border-t border-coffee-light/20 pt-6">
+                    <h2 class="text-sm font-semibold text-coffee-dark/60 uppercase tracking-wider mb-4">Cambiar contraseña</h2>
+                    <form method="POST" action="{{ route('password.update') }}" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @csrf
                         @method('put')
 
-                        <div class="mb-3">
-                            <label class="form-label" for="current_password">Contraseña actual</label>
-                            <input class="form-control @error('current_password', 'updatePassword') is-invalid @enderror"
-                                id="current_password" type="password" name="current_password" required
-                                autocomplete="current-password">
+                        <div>
+                            <label for="current_password" class="block text-sm font-medium text-coffee-dark mb-1">Contraseña actual</label>
+                            <input id="current_password" type="password" name="current_password" required autocomplete="current-password"
+                                class="block w-full rounded-lg border border-coffee-light/50 bg-white py-2.5 px-3 text-coffee-dark placeholder-coffee-dark/30 focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none transition-all">
                             @error('current_password', 'updatePassword')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label" for="new_password">Nueva contraseña</label>
-                            <input class="form-control @error('password', 'updatePassword') is-invalid @enderror"
-                                id="new_password" type="password" name="password" required autocomplete="new-password">
+                        <div>
+                            <label for="new_password" class="block text-sm font-medium text-coffee-dark mb-1">Nueva contraseña</label>
+                            <input id="new_password" type="password" name="password" required autocomplete="new-password"
+                                class="block w-full rounded-lg border border-coffee-light/50 bg-white py-2.5 px-3 text-coffee-dark placeholder-coffee-dark/30 focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none transition-all">
                             @error('password', 'updatePassword')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label" for="new_password_confirmation">Confirmar nueva contraseña</label>
-                            <input class="form-control" id="new_password_confirmation" type="password"
-                                name="password_confirmation" required autocomplete="new-password">
+                        <div class="md:col-span-2">
+                            <label for="new_password_confirmation" class="block text-sm font-medium text-coffee-dark mb-1">Confirmar nueva contraseña</label>
+                            <input id="new_password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
+                                class="block w-full rounded-lg border border-coffee-light/50 bg-white py-2.5 px-3 text-coffee-dark placeholder-coffee-dark/30 focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none transition-all">
                         </div>
 
-                        <button class="btn btn-coffee" type="submit">Actualizar contraseña</button>
+                        <div class="md:col-span-2 flex items-end">
+                            <button type="submit"
+                                class="w-auto py-2.5 px-6 rounded-lg bg-coffee-dark text-white font-medium text-sm hover:bg-coffee-gold transition-colors active:scale-[0.98]">
+                                Actualizar contraseña
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

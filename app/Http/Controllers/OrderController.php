@@ -100,7 +100,29 @@ class OrderController extends Controller
             );
         });
 
-        return redirect()->route('kitchen')->with('success', 'Pedido creado correctamente.');
+        return redirect()->route('orders.track', $order)->with('success', 'Pedido creado correctamente.');
+    }
+
+    /**
+     * Show the order tracking page for customers.
+     */
+    public function track(Order $order)
+    {
+        $statuses = [
+            'pending' => ['label' => 'Pendiente', 'color' => 'bg-amber-100 text-amber-800 border-amber-200', 'step' => 1],
+            'making' => ['label' => 'En preparación', 'color' => 'bg-blue-100 text-blue-800 border-blue-200', 'step' => 2],
+            'completed' => ['label' => 'Listo para recoger', 'color' => 'bg-green-100 text-green-800 border-green-200', 'step' => 3],
+            'delivered' => ['label' => 'Entregado', 'color' => 'bg-emerald-100 text-emerald-800 border-emerald-200', 'step' => 4],
+            'cancelled' => ['label' => 'Cancelado', 'color' => 'bg-red-100 text-red-800 border-red-200', 'step' => 0],
+        ];
+
+        $current = $statuses[$order->status] ?? $statuses['pending'];
+
+        return view('orders.track', [
+            'order' => $order,
+            'statuses' => $statuses,
+            'current' => $current,
+        ]);
     }
 
     /**
