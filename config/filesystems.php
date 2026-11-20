@@ -82,14 +82,14 @@ return [
             'endpoint' => env('SUPABASE_STORAGE_ENDPOINT'),
             'url' => env('SUPABASE_STORAGE_URL'),
             'use_path_style_endpoint' => true,
-            'visibility' => 'public',
             'http' => env('SUPABASE_STORAGE_CA_BUNDLE')
                 ? ['verify' => env('SUPABASE_STORAGE_CA_BUNDLE')]
                 : [],
             'options' => [
+                'ACL' => '',
                 'CacheControl' => 'public, max-age=31536000, immutable',
             ],
-            'throw' => false,
+            'throw' => true,
             'report' => false,
         ],
 

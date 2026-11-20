@@ -65,7 +65,11 @@ class ProductController extends Controller
 
         try {
             if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('products', 's3');
+                $path = $request->file('image')->store('products', self::imageDisk());
+                if (! $path) {
+                    throw new \RuntimeException('No se pudo subir la imagen al almacenamiento.');
+                }
+                $validated['image'] = $path;
             }
 
             Product::create($validated);
@@ -107,11 +111,20 @@ class ProductController extends Controller
 
         try {
             if ($request->hasFile('image')) {
-                if ($product->image) {
-                    Storage::disk('s3')->delete($product->image);
+                $path = $request->file('image')->store('products', self::imageDisk());
+                if (! $path) {
+                    throw new \RuntimeException('No se pudo subir la imagen al almacenamiento.');
                 }
 
-                $validated['image'] = $request->file('image')->store('products', 's3');
+                if ($product->image) {
+                    try {
+                        Storage::disk(self::imageDisk())->delete($product->image);
+                    } catch (\Throwable) {
+                        // Ignorar si la imagen previa no existía en el disco
+                    }
+                }
+
+                $validated['image'] = $path;
             }
 
             $product->update($validated);
@@ -133,7 +146,11 @@ class ProductController extends Controller
     {
         try {
             if ($product->image) {
-                Storage::disk(self::imageDisk())->delete($product->image);
+                try {
+                    Storage::disk(self::imageDisk())->delete($product->image);
+                } catch (\Throwable) {
+                    // Ignorar si la imagen previa no existía en el disco
+                }
             }
 
             $product->delete();
