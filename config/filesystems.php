@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Product Images Disk
+    |--------------------------------------------------------------------------
+    |
+    | Local development stores product photos on the "public" disk. On Vercel
+    | the filesystem is read-only, so "supabase" (S3-compatible object storage)
+    | is used instead. Both read and write operations go through this value.
+    |
+    */
+
+    'products_disk' => env('PRODUCTS_DISK', 'public'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
@@ -56,6 +69,26 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'supabase' => [
+            'driver' => 's3',
+            'key' => env('SUPABASE_STORAGE_KEY'),
+            'secret' => env('SUPABASE_STORAGE_SECRET'),
+            'region' => env('SUPABASE_STORAGE_REGION', 'us-east-1'),
+            'bucket' => env('SUPABASE_STORAGE_BUCKET', 'storage-coffeetec'),
+            'endpoint' => env('SUPABASE_STORAGE_ENDPOINT'),
+            'url' => env('SUPABASE_STORAGE_URL'),
+            'use_path_style_endpoint' => true,
+            'visibility' => 'public',
+            'http' => env('SUPABASE_STORAGE_CA_BUNDLE')
+                ? ['verify' => env('SUPABASE_STORAGE_CA_BUNDLE')]
+                : [],
+            'options' => [
+                'CacheControl' => 'public, max-age=31536000, immutable',
+            ],
             'throw' => false,
             'report' => false,
         ],

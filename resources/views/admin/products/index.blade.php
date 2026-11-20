@@ -33,7 +33,7 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if ($product->image)
-                                        <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}"
+                                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                                             class="w-16 h-16 object-cover rounded-md border border-coffee-light/30">
                                     @else
                                         <div class="w-16 h-16 rounded-md bg-coffee-dark/10 flex items-center justify-center border border-coffee-light/30">

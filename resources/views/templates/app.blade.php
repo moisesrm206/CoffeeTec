@@ -39,29 +39,28 @@
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="{{ route('menu') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Menú</a>
+                        <a href="{{ route('menu') }}" class="text-coffee-dark hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Menú</a>
 
                         @auth
-                            <a href="{{ route('kitchen') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Cocina</a>
+                            <a href="{{ route('kitchen') }}" class="text-coffee-dark hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Cocina</a>
 
                             @if (auth()->user()->isAdmin())
-                                <a href="{{ route('admin.staff.index') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Personal</a>
-                                <a href="{{ route('admin.products.index') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Productos</a>
+                                <a href="{{ route('admin.staff.index') }}" class="text-coffee-dark hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Personal</a>
+                                <a href="{{ route('admin.products.index') }}" class="text-coffee-dark hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Productos</a>
                             @endif
 
-                            <a href="{{ route('profile.edit') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Mi cuenta</a>
+                            <a href="{{ route('profile.edit') }}" class="text-coffee-dark hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Mi cuenta</a>
 
                             <form method="POST" action="{{ route('logout') }}" class="inline">
                                 @csrf
-                                <button type="submit" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors bg-transparent border-none cursor-pointer">Salir</button>
+                                <button type="submit" class="text-coffee-dark hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors bg-transparent border-none cursor-pointer">Salir</button>
                             </form>
-                        @else
-                            <a href="{{ route('login') }}" class="text-coffee-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Entrar</a>
+                        
                         @endauth
                     </div>
                 </div>
                 <div class="-mr-2 flex md:hidden">
-                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-coffee-light hover:text-white hover:bg-white/10 focus:outline-none">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-coffee-dark hover:text-white hover:bg-white/10 focus:outline-none">
                         <span class="sr-only">Abrir menú principal</span>
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />

@@ -30,6 +30,43 @@ class OrderInventoryTest extends TestCase
         ]);
     }
 
+    public function test_orders_exceeding_stock_are_rejected_on_creation(): void
+    {
+        $product = $this->makeProduct(stock: 2);
+
+        $this->post('/pedidos', [
+            'customer' => 'María López',
+            'items' => json_encode([
+                ['id' => $product->id_product, 'quantity' => 3],
+            ]),
+        ])->assertSessionHas('error');
+
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('order_products', 0);
+        $this->assertDatabaseHas('products', [
+            'id_product' => $product->id_product,
+            'stock' => 2,
+        ]);
+    }
+
+    public function test_orders_with_exactly_the_available_stock_are_accepted(): void
+    {
+        $product = $this->makeProduct(stock: 3);
+
+        $this->post('/pedidos', [
+            'customer' => 'María López',
+            'items' => json_encode([
+                ['id' => $product->id_product, 'quantity' => 3],
+            ]),
+        ])->assertSessionHas('success');
+
+        $this->assertDatabaseCount('orders', 1);
+        $this->assertDatabaseHas('products', [
+            'id_product' => $product->id_product,
+            'stock' => 3,
+        ]);
+    }
+
     public function test_starting_preparation_reduces_stock(): void
     {
         $product = $this->makeProduct(stock: 10);

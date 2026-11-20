@@ -79,6 +79,17 @@ class OrderController extends Controller
             return back()->with('error', 'Uno de los productos seleccionados ya no está disponible.');
         }
 
+        foreach ($quantities as $productId => $quantity) {
+            $product = $products->get($productId);
+
+            if ($quantity > $product->stock) {
+                return back()->with(
+                    'error',
+                    "No hay suficiente stock de {$product->name}. Solo quedan {$product->stock} unidades.",
+                );
+            }
+        }
+
         $orderItems = $quantities->map(function (int $quantity, int $productId) use ($products): array {
             $product = $products->get($productId);
 

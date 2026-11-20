@@ -79,7 +79,7 @@
                         class="block w-full text-coffee-dark/60 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-coffee-gold file:text-white hover:file:bg-coffee-dark/90">
                     @if ($product?->image)
                         <p class="mt-2 text-xs text-coffee-dark/50">
-                            Imagen actual: <a href="{{ Storage::url($product->image) }}" target="_blank" class="text-coffee-gold hover:underline">Ver imagen</a>
+                            Imagen actual: <a href="{{ $product->image_url }}" target="_blank" class="text-coffee-gold hover:underline">Ver imagen</a>
                         </p>
                     @endif
                     @error('image')

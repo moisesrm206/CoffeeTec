@@ -65,7 +65,7 @@ class ProductController extends Controller
 
         try {
             if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('products', 'public');
+                $validated['image'] = $request->file('image')->store('products', self::imageDisk());
             }
 
             Product::create($validated);
@@ -108,10 +108,10 @@ class ProductController extends Controller
         try {
             if ($request->hasFile('image')) {
                 if ($product->image) {
-                    Storage::disk('public')->delete($product->image);
+                    Storage::disk(self::imageDisk())->delete($product->image);
                 }
 
-                $validated['image'] = $request->file('image')->store('products', 'public');
+                $validated['image'] = $request->file('image')->store('products', self::imageDisk());
             }
 
             $product->update($validated);
@@ -133,7 +133,7 @@ class ProductController extends Controller
     {
         try {
             if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+                Storage::disk(self::imageDisk())->delete($product->image);
             }
 
             $product->delete();
@@ -145,5 +145,13 @@ class ProductController extends Controller
             return back()
                 ->with('error', 'No se pudo eliminar el producto: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Disk where product images live: "public" locally, "supabase" on Vercel.
+     */
+    private static function imageDisk(): string
+    {
+        return config('filesystems.products_disk');
     }
 }

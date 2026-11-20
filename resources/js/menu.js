@@ -6,9 +6,26 @@ const submitButton = document.getElementById('submit-order');
 const categoryFilter = document.getElementById('category-filter');
 const productSearch = document.getElementById('product-search');
 const productItems = document.querySelectorAll('.product-item');
+const addButtons = document.querySelectorAll('.btn-add-product');
 const noFilterResults = document.getElementById('no-filter-results');
 
+function findCartItem(productId) {
+    return cart.find((item) => item.id === productId);
+}
+
+function updateAddButtons() {
+    addButtons.forEach((button) => {
+        const quantity = findCartItem(Number(button.dataset.id))?.quantity ?? 0;
+        const reachedLimit = quantity >= Number(button.dataset.stock);
+
+        button.disabled = reachedLimit;
+        button.textContent = reachedLimit ? 'Máximo disponible' : 'Agregar al pedido';
+    });
+}
+
 function renderCart() {
+    updateAddButtons();
+
     if (!cart.length) {
         itemsContainer.innerHTML = '<p class="text-coffee-dark/50 text-sm">Aún no has agregado productos.</p>';
         totalElement.textContent = '$0.00';
@@ -30,16 +47,27 @@ function renderCart() {
     submitButton.disabled = false;
 }
 
-document.querySelectorAll('.btn-add-product').forEach((button) => {
+addButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        const product = {
-            id: Number(button.dataset.id),
-            name: button.dataset.name,
-            price: Number(button.dataset.price),
-            quantity: 1,
-        };
-        const existing = cart.find((item) => item.id === product.id);
-        existing ? existing.quantity++ : cart.push(product);
+        const productId = Number(button.dataset.id);
+        const stock = Number(button.dataset.stock);
+        const existing = findCartItem(productId);
+
+        if (existing) {
+            if (existing.quantity >= stock) {
+                return;
+            }
+
+            existing.quantity++;
+        } else {
+            cart.push({
+                id: productId,
+                name: button.dataset.name,
+                price: Number(button.dataset.price),
+                quantity: 1,
+            });
+        }
+
         renderCart();
     });
 });

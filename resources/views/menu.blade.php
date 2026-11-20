@@ -10,70 +10,6 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div class="lg:col-span-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div>
-                    <label for="category-filter" class="block text-sm font-medium text-coffee-dark mb-1">Categoría</label>
-                    <select id="category-filter" class="block w-full rounded-md border border-coffee-light/50 bg-white py-2 px-3 text-coffee-dark focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none sm:text-sm">
-                        <option value="">Todas las categorías</option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id_category }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label for="product-search" class="block text-sm font-medium text-coffee-dark mb-1">Buscar producto o alimento</label>
-                    <input id="product-search" type="search" placeholder="Ej. café, sándwich..." autocomplete="off"
-                        class="block w-full rounded-md border border-coffee-light/50 bg-white py-2 px-3 text-coffee-dark focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none sm:text-sm">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="product-list">
-                @forelse (($products ?? collect()) as $product)
-                    <div class="product-item group relative"
-                        data-category="{{ $product->id_category }}"
-                        data-product-name="{{ $product->name }}">
-                        <div class="card product-card h-full rounded-lg border border-coffee-light/30 bg-white shadow-sm overflow-hidden flex flex-col">
-                            <div class="relative h-48 overflow-hidden">
-                                @if ($product->image)
-                                    <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}"
-                                        class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full bg-coffee-dark/10 flex items-center justify-center border-b border-coffee-light/20">
-                                        <span class="text-coffee-dark/30 text-xl">☕</span>
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="p-4 flex-1 flex flex-col">
-                                <div class="flex justify-between items-start">
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-coffee-light text-coffee-dark text-xs font-medium">${{ number_format((float) $product->price, 2) }}</span>
-                                </div>
-                                <h2 class="mt-3 mb-1 text-lg font-semibold text-coffee-dark group-hover:text-coffee-gold transition-colors">{{ $product->name }}</h2>
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-coffee-dark/10 text-coffee-dark text-xs font-semibold mb-3">{{ $product->category->name }}</span>
-                                <p class="text-sm text-coffee-dark/60 mb-4 flex-1">{{ $product->description ?? 'Producto de la cafetería escolar.' }}</p>
-                                <button class="btn-add-product btn-coffee w-full py-2 rounded-lg font-medium text-sm transition-colors hover:bg-coffee-gold hover:text-white active:scale-95"
-                                    data-id="{{ $product->id_product }}"
-                                    data-name="{{ $product->name }}"
-                                    data-price="{{ $product->price }}">
-                                    Agregar al pedido
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-full">
-                        <div class="p-6 text-center rounded-lg border border-dashed border-coffee-light/50 bg-coffee-dark/5">
-                            <p class="text-coffee-dark/60 text-sm">No hay productos disponibles en este momento.</p>
-                        </div>
-                    </div>
-                @endforelse
-            </div>
-
-            <div id="no-filter-results" class="hidden p-6 text-center rounded-lg border border-coffee-light/50 bg-coffee-dark/5">
-                <p class="text-coffee-dark/60 text-sm">No hay productos que coincidan con los filtros seleccionados.</p>
-            </div>
-        </div>
-
         <aside class="lg:col-span-4">
             <div class="sticky top-6 rounded-xl border border-coffee-light/30 bg-white shadow-sm">
                 <div class="p-4">
@@ -101,6 +37,72 @@
                 </div>
             </div>
         </aside>
+        <div class="lg:col-span-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="category-filter" class="block text-sm font-medium text-coffee-dark mb-1">Categoría</label>
+                    <select id="category-filter" class="block w-full rounded-md border border-coffee-light/50 bg-white py-2 px-3 text-coffee-dark focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none sm:text-sm">
+                        <option value="">Todas las categorías</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id_category }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="product-search" class="block text-sm font-medium text-coffee-dark mb-1">Buscar producto o alimento</label>
+                    <input id="product-search" type="search" placeholder="Ej. café, sándwich..." autocomplete="off"
+                        class="block w-full rounded-md border border-coffee-light/50 bg-white py-2 px-3 text-coffee-dark focus:ring-2 focus:ring-coffee-gold/50 focus:border-coffee-gold outline-none sm:text-sm">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="product-list">
+                @forelse (($products ?? collect()) as $product)
+                    <div class="product-item group relative"
+                        data-category="{{ $product->id_category }}"
+                        data-product-name="{{ $product->name }}">
+                        <div class="card product-card h-full rounded-lg border border-coffee-light/30 bg-white shadow-sm overflow-hidden flex flex-col">
+                            <div class="relative h-48 overflow-hidden">
+                                @if ($product->image)
+                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full bg-coffee-dark/10 flex items-center justify-center border-b border-coffee-light/20">
+                                        <span class="text-coffee-dark/30 text-xl">☕</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="p-4 flex-1 flex flex-col">
+                                <div class="flex justify-between items-start">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-coffee-light text-coffee-dark text-xs font-medium">${{ number_format((float) $product->price, 2) }}</span>
+                                </div>
+                                <h2 class="mt-3 mb-1 text-lg font-semibold text-coffee-dark group-hover:text-coffee-gold transition-colors">{{ $product->name }}</h2>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-coffee-dark/10 text-coffee-dark text-xs font-semibold mb-3">{{ $product->category->name }}</span>
+                                <p class="text-sm text-coffee-dark/60 mb-4 flex-1">{{ $product->description ?? 'Producto de la cafetería escolar.' }}</p>
+                                <button type="button" class="btn-add-product btn-coffee w-full py-2 rounded-lg font-medium text-sm transition-colors hover:bg-coffee-gold hover:text-white active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-coffee-dark"
+                                    data-id="{{ $product->id_product }}"
+                                    data-name="{{ $product->name }}"
+                                    data-price="{{ $product->price }}"
+                                    data-stock="{{ $product->stock }}">
+                                    Agregar al pedido
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full">
+                        <div class="p-6 text-center rounded-lg border border-dashed border-coffee-light/50 bg-coffee-dark/5">
+                            <p class="text-coffee-dark/60 text-sm">No hay productos disponibles en este momento.</p>
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+
+            <div id="no-filter-results" class="hidden p-6 text-center rounded-lg border border-coffee-light/50 bg-coffee-dark/5">
+                <p class="text-coffee-dark/60 text-sm">No hay productos que coincidan con los filtros seleccionados.</p>
+            </div>
+        </div>
+
+        
     </div>
 @endsection
 
