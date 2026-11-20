@@ -10,10 +10,13 @@
         <style>
     :root {
         --coffee-dark: #0A2947;
+        --brand-blue: #082A45;
         --coffee-light: #D3D4C0;
         --coffee-cream: #F3E4C9;
         --coffee-gold: #8B5E3C;
     }
+
+    .bg-brand-blue { background-color: var(--brand-blue); }
 
     body { background-color: var(--coffee-cream); color: var(--coffee-dark); }
     .navbar, .btn-coffee { background-color: var(--coffee-dark); color: #fff; }
@@ -28,7 +31,7 @@
     @endif
 </head>
 <body class="bg-coffee-cream text-coffee-dark min-h-screen flex flex-col">
-    <nav class="bg-coffee-dark shadow-sm">
+    <nav class="bg-coffee-light shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="shrink-0 flex items-center gap-2">

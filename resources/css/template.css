@@ -1,5 +1,6 @@
 :root {
     --coffee-dark: #0A2947;
+    --brand-blue: #082A45;
     --coffee-light: #D3D4C0;
     --coffee-cream: #F3E4C9;
     --coffee-gold: #8B5E3C;
@@ -45,12 +46,20 @@ body {
     background-color: var(--coffee-dark);
 }
 
+.bg-brand-blue {
+    background-color: var(--brand-blue);
+}
+
 .bg-coffee-cream {
     background-color: var(--coffee-cream);
 }
 
 .bg-coffee-light {
     background-color: var(--coffee-light);
+}
+
+.bg-coffee-gold {
+    background-color: var(--coffee-gold);
 }
 
 .border-coffee-gold {
