@@ -31,9 +31,8 @@
     <nav class="bg-coffee-dark shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <span class="text-coffee-gold text-xl font-bold brand-mark">☕</span>
-                    <span class="font-bold text-xl tracking-tight text-white">CoffeeTec</span>
+                <div class="shrink-0 flex items-center gap-2">
+                    <img class="h-10 w-auto" src="{{ asset('images/logo.png') }}" alt="CoffeeTec Logo">
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
