@@ -13,6 +13,16 @@ use Illuminate\Validation\Rule;
 class OrderController extends Controller
 {
     /**
+     * Allowed status transitions for an order.
+     *
+     * @var array<string, array<int, string>>
+     */
+    private const STATUS_TRANSITIONS = [
+        'pending' => ['making', 'cancelled'],
+        'making' => ['completed', 'cancelled'],
+    ];
+
+    /**
      * Display a listing of the resource.
      */
     public function index(): View
@@ -129,16 +139,82 @@ class OrderController extends Controller
 
     /**
      * Update an order status.
+     *
+     * Stock is discounted when the order starts being prepared and restored
+     * only when an order in preparation is cancelled. Once an order is
+     * completed it can no longer be cancelled and its stock is final.
      */
     public function updateStatus(Request $request, Order $order): RedirectResponse
     {
         $validated = $request->validate([
-            'status' => ['required', Rule::in(['making', 'completed'])],
+            'status' => ['required', Rule::in(['making', 'completed', 'cancelled'])],
         ]);
 
-        $order->update($validated);
+        $status = $validated['status'];
 
-        return redirect()->route('kitchen')->with('success', 'Estado del pedido actualizado.');
+        if (! in_array($status, self::STATUS_TRANSITIONS[$order->status] ?? [], true)) {
+            return back()->with('error', 'El pedido no puede cambiar a ese estado.');
+        }
+
+        $result = DB::transaction(function () use ($order, $status): array {
+            $order = Order::query()
+                ->whereKey($order->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if (! in_array($status, self::STATUS_TRANSITIONS[$order->status] ?? [], true)) {
+                return ['updated' => false, 'message' => 'El pedido ya fue actualizado por otra persona.'];
+            }
+
+            $quantities = $order->orderProducts()
+                ->get()
+                ->groupBy('id_product')
+                ->map(fn ($items): int => (int) $items->sum('quantity'));
+
+            if ($status === 'making') {
+                $products = Product::query()
+                    ->whereIn('id_product', $quantities->keys())
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id_product');
+
+                foreach ($quantities as $productId => $quantity) {
+                    $product = $products->get($productId);
+
+                    if ($product === null || $product->stock < $quantity) {
+                        return [
+                            'updated' => false,
+                            'message' => 'No hay suficiente stock de '.($product?->name ?? 'un producto').' para este pedido.',
+                        ];
+                    }
+                }
+
+                foreach ($quantities as $productId => $quantity) {
+                    $products->get($productId)->decrement('stock', $quantity);
+                }
+            }
+
+            if ($status === 'cancelled' && $order->status === 'making') {
+                $products = Product::query()
+                    ->whereIn('id_product', $quantities->keys())
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id_product');
+
+                foreach ($quantities as $productId => $quantity) {
+                    $products->get($productId)?->increment('stock', $quantity);
+                }
+            }
+
+            $order->update(['status' => $status]);
+
+            return ['updated' => true, 'message' => 'Estado del pedido actualizado.'];
+        });
+
+        return back()->with(
+            $result['updated'] ? 'success' : 'error',
+            $result['message'],
+        );
     }
 
     /**

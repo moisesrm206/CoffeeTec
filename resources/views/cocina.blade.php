@@ -86,16 +86,30 @@
                                         <span class="text-coffee-dark">${{ number_format($order->total, 2) }}</span>
                                     </div>
 
-                                    @isset($column['action'])
-                                        <form method="POST" action="{{ route('orders.status', $order) }}" class="p-4 border-t border-coffee-light/10">
-                                            @csrf
-                                            <input type="hidden" name="status" value="{{ $column['action'] }}">
-                                            <button type="submit"
-                                                class="w-full py-2 rounded-lg bg-coffee-dark text-white font-medium text-sm hover:bg-coffee-gold transition-colors active:scale-[0.98]">
-                                                {{ $column['actionLabel'] }}
-                                            </button>
-                                        </form>
-                                    @endisset
+                                    @if ($status !== 'completed')
+                                        <div class="p-4 border-t border-coffee-light/10 flex flex-col gap-2">
+                                            @isset($column['action'])
+                                                <form method="POST" action="{{ route('orders.status', $order) }}">
+                                                    @csrf
+                                                    <input type="hidden" name="status" value="{{ $column['action'] }}">
+                                                    <button type="submit"
+                                                        class="w-full py-2 rounded-lg bg-coffee-dark text-white font-medium text-sm hover:bg-coffee-gold transition-colors active:scale-[0.98]">
+                                                        {{ $column['actionLabel'] }}
+                                                    </button>
+                                                </form>
+                                            @endisset
+
+                                            <form method="POST" action="{{ route('orders.status', $order) }}"
+                                                onsubmit="return confirm('¿Cancelar el pedido #{{ str_pad($order->id_order, 3, '0', STR_PAD_LEFT) }}?{{ $status === 'making' ? ' El stock de sus productos será repuesto.' : '' }}');">
+                                                @csrf
+                                                <input type="hidden" name="status" value="cancelled">
+                                                <button type="submit"
+                                                    class="w-full py-2 rounded-lg border border-red-200 bg-red-50 text-red-700 font-medium text-sm hover:bg-red-100 transition-colors active:scale-[0.98]">
+                                                    Cancelar pedido
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
                                 </div>
                             </article>
                         @empty
