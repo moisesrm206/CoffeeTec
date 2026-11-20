@@ -60,13 +60,41 @@
                     </div>
                 </div>
                 <div class="-mr-2 flex md:hidden">
-                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-coffee-dark hover:text-white hover:bg-white/10 focus:outline-none">
+                    <button type="button" id="mobile-menu-button" aria-controls="mobile-menu" aria-expanded="false"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-coffee-dark hover:text-white hover:bg-white/10 focus:outline-none transition-colors">
                         <span class="sr-only">Abrir menú principal</span>
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                        <svg id="mobile-menu-icon-closed" class="h-6 w-6 block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="mobile-menu-icon-open" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Menú desplegable para móviles -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-coffee-dark/10 bg-coffee-light">
+            <div class="px-4 pt-2 pb-4 space-y-1">
+                <a href="{{ route('menu') }}" class="block px-3 py-2 rounded-md text-base font-medium text-coffee-dark hover:text-white hover:bg-coffee-dark/20 transition-colors">Menú</a>
+
+                @auth
+                    <a href="{{ route('kitchen') }}" class="block px-3 py-2 rounded-md text-base font-medium text-coffee-dark hover:text-white hover:bg-coffee-dark/20 transition-colors">Cocina</a>
+
+                    @if (auth()->user()->isAdmin())
+                        <a href="{{ route('admin.staff.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-coffee-dark hover:text-white hover:bg-coffee-dark/20 transition-colors">Personal</a>
+                        <a href="{{ route('admin.products.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-coffee-dark hover:text-white hover:bg-coffee-dark/20 transition-colors">Productos</a>
+                    @endif
+
+                    <a href="{{ route('profile.edit') }}" class="block px-3 py-2 rounded-md text-base font-medium text-coffee-dark hover:text-white hover:bg-coffee-dark/20 transition-colors">Mi cuenta</a>
+
+                    <form method="POST" action="{{ route('logout') }}" class="block pt-1">
+                        @csrf
+                        <button type="submit" class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-coffee-dark hover:text-white hover:bg-coffee-dark/20 transition-colors bg-transparent border-none cursor-pointer">Salir</button>
+                    </form>
+                
+                @endauth
             </div>
         </div>
     </nav>
@@ -107,6 +135,43 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
+            const iconClosed = document.getElementById('mobile-menu-icon-closed');
+            const iconOpen = document.getElementById('mobile-menu-icon-open');
+
+            if (btn && menu) {
+                btn.addEventListener('click', function () {
+                    const willOpen = menu.classList.contains('hidden');
+                    menu.classList.toggle('hidden', !willOpen);
+                    btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+
+                    if (iconClosed && iconOpen) {
+                        iconClosed.classList.toggle('hidden', willOpen);
+                        iconClosed.classList.toggle('block', !willOpen);
+                        iconOpen.classList.toggle('hidden', !willOpen);
+                        iconOpen.classList.toggle('block', willOpen);
+                    }
+                });
+
+                window.addEventListener('resize', function () {
+                    if (window.innerWidth >= 768 && !menu.classList.contains('hidden')) {
+                        menu.classList.add('hidden');
+                        btn.setAttribute('aria-expanded', 'false');
+                        if (iconClosed && iconOpen) {
+                            iconClosed.classList.remove('hidden');
+                            iconClosed.classList.add('block');
+                            iconOpen.classList.add('hidden');
+                            iconOpen.classList.remove('block');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 
     @stack('scripts')
 </body>
