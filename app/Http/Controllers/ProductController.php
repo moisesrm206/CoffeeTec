@@ -65,7 +65,7 @@ class ProductController extends Controller
 
         try {
             if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('products', self::imageDisk());
+                $validated['image'] = $request->file('image')->store('products', 's3');
             }
 
             Product::create($validated);
@@ -108,10 +108,10 @@ class ProductController extends Controller
         try {
             if ($request->hasFile('image')) {
                 if ($product->image) {
-                    Storage::disk(self::imageDisk())->delete($product->image);
+                    Storage::disk('s3')->delete($product->image);
                 }
 
-                $validated['image'] = $request->file('image')->store('products', self::imageDisk());
+                $validated['image'] = $request->file('image')->store('products', 's3');
             }
 
             $product->update($validated);
@@ -148,7 +148,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Disk where product images live: "public" locally, "supabase" on Vercel.
+     * Disk where product images live: "public" locally, "s3" on Vercel.
      */
     private static function imageDisk(): string
     {
